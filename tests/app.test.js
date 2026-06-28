@@ -13,3 +13,20 @@ test('createApp wires default providers and health status', async () => {
   assert.equal(app.integrations.storage.name, 'postgres');
   assert.equal(typeof app.recoveryManager.requestRecovery, 'function');
 });
+
+test('health endpoint responds with service status', async () => {
+  const app = createApp({});
+  await new Promise((resolve) => app.server.listen(0, '127.0.0.1', resolve));
+  const address = app.server.address();
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/health`);
+    const body = await response.json();
+
+    assert.equal(response.status, 200);
+    assert.equal(body.status, 'ok');
+    assert.equal(body.service, 'bfm-booking-travel');
+  } finally {
+    await new Promise((resolve) => app.server.close(resolve));
+  }
+});

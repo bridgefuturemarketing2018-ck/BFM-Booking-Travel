@@ -6,12 +6,16 @@ function createRestClient({ baseUrl = '', timeoutMs = 10000, apiKey = '' } = {})
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
+      const mergedHeaders = { ...(options.headers || {}) };
+      if (!Object.keys(mergedHeaders).some((header) => header.toLowerCase() === 'content-type')) {
+        mergedHeaders['content-type'] = 'application/json';
+      }
+
       const response = await fetch(`${baseUrl}${path}`, {
         ...options,
         headers: {
-          'content-type': 'application/json',
           ...(apiKey ? { 'x-api-key': apiKey } : {}),
-          ...(options.headers || {}),
+          ...mergedHeaders,
         },
         signal: controller.signal,
       });
