@@ -68,14 +68,25 @@ function createApp(env = process.env) {
     if (req.method === 'POST' && requestUrl.pathname.startsWith('/webhooks/')) {
       const provider = requestUrl.pathname.replace('/webhooks/', '');
       let body = '';
+      let bodyTooLarge = false;
+      let bodyBytes = 0;
       req.on('data', (chunk) => {
+        if (bodyTooLarge) return;
         body += chunk;
+        bodyBytes += chunk.length;
+        if (bodyBytes > config.service.webhookMaxBytes) {
+          bodyTooLarge = true;
+          json(res, 413, { message: 'Payload too large' });
+          req.destroy();
+        }
       });
       req.on('end', async () => {
+        if (bodyTooLarge) return;
         let parsed;
         try {
           parsed = body ? JSON.parse(body) : {};
         } catch (error) {
+          console.error(`[webhook] invalid payload for provider=${provider}: ${error.message}`);
           return json(res, 400, { message: 'Invalid JSON payload' });
         }
         const result = await webhookHandler.handle({ provider, event: parsed });

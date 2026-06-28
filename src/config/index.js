@@ -12,6 +12,7 @@ function configFromEnv(env = process.env) {
       host: env.HOST || '0.0.0.0',
       environment: env.NODE_ENV || 'development',
       apiKey: env.INTERNAL_API_KEY || '',
+      webhookMaxBytes: Number(env.WEBHOOK_MAX_BYTES || 1024 * 1024),
     },
     operations: {
       autoRecoveryEnabled: toBool(env.AUTO_RECOVERY_ENABLED, true),

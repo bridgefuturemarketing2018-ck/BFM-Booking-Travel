@@ -22,8 +22,13 @@ test('recovery manager executes hooks when enabled', async () => {
 
 test('recovery manager skips when disabled', async () => {
   const manager = createRecoveryManager({ autoRecoveryEnabled: false });
-  manager.registerHook(async () => ({ step: 'should-not-run', ok: true }));
+  let executed = false;
+  manager.registerHook(async () => {
+    executed = true;
+    return { step: 'should-not-run', ok: true };
+  });
 
   const result = await manager.requestRecovery();
   assert.equal(result.triggered, false);
+  assert.equal(executed, false);
 });

@@ -30,3 +30,21 @@ test('health endpoint responds with service status', async () => {
     await new Promise((resolve) => app.server.close(resolve));
   }
 });
+
+test('webhook endpoint rejects oversized payloads', async () => {
+  const app = createApp({ WEBHOOK_MAX_BYTES: '10' });
+  await new Promise((resolve) => app.server.listen(0, '127.0.0.1', resolve));
+  const address = app.server.address();
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/webhooks/stripe`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ type: 'abcdefghijk' }),
+    });
+
+    assert.equal(response.status, 413);
+  } finally {
+    await new Promise((resolve) => app.server.close(resolve));
+  }
+});

@@ -36,6 +36,7 @@ npm start
 ## Configuration
 
 Copy `.env.example` into your runtime environment and set provider credentials via environment variables.
+Set `WEBHOOK_MAX_BYTES` to control maximum accepted webhook payload size.
 
 No live credentials are committed. Provider modules are intentionally safe placeholders that expose stable interfaces and configuration points.
 
