@@ -1,0 +1,21 @@
+{
+  "name": "bfm-booking-travel",
+  "version": "1.0.0",
+  "description": "Integration-ready starter service for booking and travel operations",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bridgefuturemarketing2018-ck/BFM-Booking-Travel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bridgefuturemarketing2018-ck/BFM-Booking-Travel/issues"
+  },
+  "homepage": "https://github.com/bridgefuturemarketing2018-ck/BFM-Booking-Travel#readme"
+}
